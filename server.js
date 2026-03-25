@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'velora-secret-key';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -225,16 +225,6 @@ app.get('/api/chat/messages', (req, res) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     res.json({ messages: messages.get(decoded.userId) || [] });
-  } catch { res.status(401).json({ message: 'Invalid token' }); }
-});
-
-app.delete('/api/chat/clear', (req, res) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) return res.status(401).json({ message: 'No token' });
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    messages.set(decoded.userId, []);
-    res.json({ message: 'Chat cleared' });
   } catch { res.status(401).json({ message: 'Invalid token' }); }
 });
 
